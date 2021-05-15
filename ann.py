@@ -26,9 +26,12 @@ class ANN(object):
 
     def feed_forward(self, x):
         
+        layers_outputs = list()
+
         # Handle the input layer
         input_layer_output = x.dot(self.input_layer_weights)
         input_layer_output = ANN.sigmoid(input_layer_output)
+        layers_outputs.append(input_layer_output)
 
         curr_input = input_layer_output
 
@@ -37,14 +40,28 @@ class ANN(object):
             curr_output = curr_input.dot(self.hidden_layers_weights[i])
             curr_output = ANN.sigmoid(curr_output)
 
+            layers_outputs.append(curr_output)
+
             curr_input = curr_output
         
         # Handle the output layer
         output = curr_input.dot(self.output_layer_weights)
         output = ANN.sigmoid(output)
 
-        return output
+        layers_outputs.append(output)
 
+        return layers_outputs
+
+    def loss(output, expected_output):
+        s = np.square(output - expected_output)
+        s = np.sum(s) / len(expected_output)
+        return s
+
+    def back_propogation(x, y, alpha):
+        pass
+
+    def train(self, x, y, alpha=0.01, epochs=10):
+        pass
 
     def __str__(self):
         return str(f"Input weights: {self.input_layer_weights}\nHidden weights:{self.hidden_layers_weights}\nOutput weights:{self.output_layer_weights}")

@@ -134,7 +134,7 @@ def main():
                                 np.array(c).reshape(1, 30)]
     ann = ANN(input_dim=30, output_dim=3, hidden_layers=10, hidden_layer_length=5)
     #print(ann)
-    print(ann.feed_forward(x[0]))
+    print(ann.feed_forward(x[0])[-1])
 
 if __name__ == "__main__":
     main()
