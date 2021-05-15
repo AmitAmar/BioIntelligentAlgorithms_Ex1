@@ -135,8 +135,8 @@ def main():
     y = np.array(global_y)
     ann = ANN(input_dim=30, output_dim=3, hidden_layers=1, hidden_layer_length=5)
     #print(ann)
-    #print(ann.feed_forward(x[0])[-1])
-    print(ann.back_propogation(x[0], y[0], 0.01))
+    print(ann.feed_forward(x[0])[-1])
+    #print(ann.back_propogation(x[0], y[0], 0.01))
 
 if __name__ == "__main__":
     main()

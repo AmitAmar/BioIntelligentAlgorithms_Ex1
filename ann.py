@@ -20,38 +20,37 @@ class ANN(object):
         return(1/(1 + np.exp(-x)))
 
     def init_weights(self):
-        self.input_layer_weights = np.random.rand(self.input_dim, self.hidden_layer_length)
-        self.output_layer_weights = np.random.rand(self.hidden_layer_length, self.output_dim)
-        self.hidden_layers_weights = np.random.rand(self.hidden_layers - 1, self.hidden_layer_length, self.hidden_layer_length)
+        self.layers = list()
+
+        # In case that there are no hidden layers, connect the input and the output layer
+        if self.hidden_layers == 0:
+            self.layers.append(np.random.rand(self.input_dim, self.output_dim))
+            return
+        else:
+            self.layers.append(np.random.rand(self.input_dim, self.hidden_layer_length))
+
+        for i in range(self.hidden_layers - 1):
+            self.layers.append(np.random.rand(self.hidden_layer_length, self.hidden_layer_length))
+        
+        self.layers.append(np.random.rand(self.layers[-1].shape[1], self.output_dim))
+
+        # TODO: Remove this print, its here for debug purposes
+        for i in range(len(self.layers)):
+            print(f"Layer {i} shape: {self.layers[i].shape}")
+        
 
     def feed_forward(self, x):
-        
         layers_outputs = list()
 
+        # Append the input layer to the given outputs
         layers_outputs.append(x)
 
-        # Handle the input layer
-        input_layer_output = x.dot(self.input_layer_weights)
-        input_layer_output = ANN.sigmoid(input_layer_output)
-        layers_outputs.append(input_layer_output)
-
-        curr_input = input_layer_output
-
-        # Iterate through the hidden layers and feed forward
-        for i in range(len(self.hidden_layers_weights)):
-            curr_output = curr_input.dot(self.hidden_layers_weights[i])
-            curr_output = ANN.sigmoid(curr_output)
-
-            layers_outputs.append(curr_output)
-
-            curr_input = curr_output
+        # Feed forward the output of each layer with its weights and activation function
+        for i in range(len(self.layers)):
+            layers_outputs.append(
+                ANN.sigmoid(layers_outputs[i].dot(self.layers[i]))
+            )
         
-        # Handle the output layer
-        output = curr_input.dot(self.output_layer_weights)
-        output = ANN.sigmoid(output)
-
-        layers_outputs.append(output)
-
         return layers_outputs
 
     def loss(output, expected_output):
