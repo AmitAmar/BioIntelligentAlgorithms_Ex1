@@ -24,15 +24,15 @@ class ANN(object):
 
         # In case that there are no hidden layers, connect the input and the output layer
         if self.hidden_layers == 0:
-            self.layers.append(np.random.rand(self.input_dim, self.output_dim))
+            self.layers.append(np.random.randn(self.input_dim, self.output_dim))
             return
         else:
-            self.layers.append(np.random.rand(self.input_dim, self.hidden_layer_length))
+            self.layers.append(np.random.randn(self.input_dim, self.hidden_layer_length))
 
         for i in range(self.hidden_layers - 1):
-            self.layers.append(np.random.rand(self.hidden_layer_length, self.hidden_layer_length))
+            self.layers.append(np.random.randn(self.hidden_layer_length, self.hidden_layer_length))
         
-        self.layers.append(np.random.rand(self.layers[-1].shape[1], self.output_dim))
+        self.layers.append(np.random.randn(self.layers[-1].shape[1], self.output_dim))
 
         # TODO: Remove this print, its here for debug purposes
         for i in range(len(self.layers)):
