@@ -60,36 +60,21 @@ class ANN(object):
 
     def back_propogation(self, x, y, alpha):
         layers_output = self.feed_forward(x)
+        layers_error = [0] * len(self.layers)
+        layers_adj = [0] * len(self.layers)
 
-        layers_error = [0] * ((self.hidden_layers - 1) + 1)
-        layers_gradients = [0] * ((self.hidden_layers - 1) + 2)
+        output_error = (layers_output[-1] - y)
+        layers_error[-1] = output_error
 
-        # Update output layer error
-        layers_error[-1] = (layers_output[-1] - y)
-
-        # Update hidden layers error
-        for i in range(self.hidden_layers - 1, 0, -1):
-            next_layer = self.hidden_layers_weights[i + 1]
-            curr_layer = self.hidden_layers_weights[i]
-
+        for i in range(len(self.layers) - 2, -1, -1):
             curr_error = np.multiply(
-                (next_layer.dot((layers_error[i + 1].transpose()))).transpose(),
-                np.multiply(layers_output[i], 1 - layers_output[i])
+                self.layers[i + 1].dot(layers_error[i + 1].transpose()).transpose(),
+                np.multiply(layers_output[i + 1], 1 - layers_output[i + 1])
             )
-
-            layers_error[i] = curr_error
-
-        output_layer_gradient = layers_output[-2].transpose().dot(layers_error[-1])
-        input_layer_gradient = layers_output[0].transpose().dot(layers_error[0])
-
-        print(output_layer_gradient.shape)
-        print(input_layer_gradient.shape)
-        # Update input layer error
         
-
-        #print(layers_error)
-        #output_update
-        #np.multiply(self.)
+        for i in range(len(self.layers)):
+            layers_adj[i] = layers_output[i].transpose().dot(layers_error[i])
+            self.layers[i] = self.layers[i] - (alpha * layers_adj[i])
 
 
     def train(self, x, y, alpha=0.01, epochs=10):
