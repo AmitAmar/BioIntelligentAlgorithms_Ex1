@@ -72,6 +72,7 @@ def back_prop(x, y, w1, w2, alpha):
     # Output layer
     z2 = a1.dot(w2)# input of out layer
     a2 = sigmoid(z2)# output of out layer
+    
     # error in output layer
     d2 =(a2-y)
     d1 = np.multiply((w2.dot((d2.transpose()))).transpose(), 
@@ -126,15 +127,16 @@ def main():
     print(w1, "\n\n", w2)
 
 
-    y = np.array(global_y)
 
     acc, losss, w1, w2 = train(x, y, w1, w2, 0.1, 200)
     """
     x =[np.array(a).reshape(1, 30), np.array(b).reshape(1, 30), 
                                 np.array(c).reshape(1, 30)]
-    ann = ANN(input_dim=30, output_dim=3, hidden_layers=10, hidden_layer_length=5)
+    y = np.array(global_y)
+    ann = ANN(input_dim=30, output_dim=3, hidden_layers=1, hidden_layer_length=5)
     #print(ann)
-    print(ann.feed_forward(x[0])[-1])
+    #print(ann.feed_forward(x[0])[-1])
+    print(ann.back_propogation(x[0], y[0], 0.01))
 
 if __name__ == "__main__":
     main()
