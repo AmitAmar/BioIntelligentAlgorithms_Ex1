@@ -53,6 +53,7 @@ class ANN(object):
         
         return layers_outputs
 
+    @staticmethod
     def loss(output, expected_output):
         s = np.square(output - expected_output)
         s = np.sum(s) / len(expected_output)
@@ -66,11 +67,13 @@ class ANN(object):
         output_error = (layers_output[-1] - y)
         layers_error[-1] = output_error
 
+        # len() - 1 is the already calculated output layer
         for i in range(len(self.layers) - 2, -1, -1):
             curr_error = np.multiply(
                 self.layers[i + 1].dot(layers_error[i + 1].transpose()).transpose(),
                 np.multiply(layers_output[i + 1], 1 - layers_output[i + 1])
             )
+            layers_error[i] = curr_error
         
         for i in range(len(self.layers)):
             layers_adj[i] = layers_output[i].transpose().dot(layers_error[i])
@@ -78,7 +81,19 @@ class ANN(object):
 
 
     def train(self, x, y, alpha=0.01, epochs=10):
-        pass
+        acc = list()
+        losses = list()
+
+        for j in range(epochs):
+            l = list()
+            for i in range(len(x)):
+                out = self.feed_forward(x[i])
+                l.append(ANN.loss(out[-1], y[i]))
+                self.back_propogation(x[i], y[i], alpha)
+            print("epochs:", j + 1, "======== acc:", (1-(sum(l)/len(x)))*100)
+            acc.append((1-(sum(l)/len(x)))*100)
+            losses.append(sum(l)/len(x))
+        return acc, losses
 
     def __str__(self):
         return str(f"Input weights: {self.input_layer_weights}\nHidden weights:{self.hidden_layers_weights}\nOutput weights:{self.output_layer_weights}")

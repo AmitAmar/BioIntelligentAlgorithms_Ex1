@@ -122,23 +122,25 @@ def predict(x, w1, w2):
 
 def main():
     """
-    w1 = generate_wt(30, 5)
-    w2 = generate_wt(5, 3)
     print(w1, "\n\n", w2)
 
 
 
-    acc, losss, w1, w2 = train(x, y, w1, w2, 0.1, 200)
     """
+    w1 = generate_wt(30, 5)
+    w2 = generate_wt(5, 3)
     x =[np.array(a).reshape(1, 30), np.array(b).reshape(1, 30), 
                                 np.array(c).reshape(1, 30)]
     y = np.array(global_y)
     ann = ANN(input_dim=30, output_dim=3, hidden_layers=1, hidden_layer_length=5)
+    #acc, losss, w1, w2 = train(x, y, w1, w2, 0.1, 200)
     #print(ann)
     #print(ann.feed_forward(x[0])[-1])
 
-    for i in range(10):
-        ann.back_propogation(x[0], y[0], 0.01)
+    #for i in range(10):
+    #    ann.back_propogation(x[0], y[0], 0.01)
+
+    ann.train(x, y, alpha=0.1, epochs=200)
 
 if __name__ == "__main__":
     main()
