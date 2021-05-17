@@ -1,4 +1,5 @@
-from .activations_functions import *
+import numpy as np
+from activations_functions import *
 
 
 class ANN(object):
@@ -68,6 +69,8 @@ class ANN(object):
         for j in range(epochs):
             l = list()
             for i in range(len(x)):
+                if i % 500 == 0:
+                    print(f"Using the {i} example from the training set")
                 out = self.feed_forward(x[i])
                 l.append(ANN.loss(out[-1], y[i]))
                 self.back_propagation(x[i], y[i], alpha)
