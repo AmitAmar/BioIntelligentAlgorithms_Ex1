@@ -1,6 +1,5 @@
 import numpy as np
-import pandas as pd
-from ann import ANN
+from BioIntelligentAlgorithms_Ex1.src.ann import ANN
 
 # Creating data set
   
@@ -28,6 +27,7 @@ global_y =[[1, 0, 0],
            [0, 1, 0],
            [0, 0, 1]]
 
+
 def main():
     # Fixes numpy's random seed
     np.random.seed(0)
@@ -43,6 +43,7 @@ def main():
     
     # Trains the ANN with the dataset
     ann.train(x, y, alpha=0.1, epochs=200)
+
 
 if __name__ == "__main__":
     main()
