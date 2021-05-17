@@ -1,4 +1,5 @@
 import numpy as np
+import random
 from activations_functions import *
 
 
@@ -45,12 +46,12 @@ class ANN(object):
     def back_propagation(self, x, y, alpha):
         layers_output = self.feed_forward(x)
         layers_error = [0] * len(self.layers)
-        layers_adj = [0] * len(self.layers)
 
         output_error = (layers_output[-1] - y)
         layers_error[-1] = output_error
 
         # len() - 1 is the already calculated output layer
+        # The first output in layers output is the input, so the ith layer output is in the i+1 index
         for i in range(len(self.layers) - 2, -1, -1):
             curr_error = np.multiply(
                 self.layers[i + 1].dot(layers_error[i + 1].transpose()).transpose(),
@@ -59,26 +60,15 @@ class ANN(object):
             layers_error[i] = curr_error
         
         for i in range(len(self.layers)):
-            layers_adj[i] = layers_output[i].transpose().dot(layers_error[i])
-            self.layers[i] = self.layers[i] - (alpha * layers_adj[i])
+            adj = layers_output[i].transpose().dot(layers_error[i])
+            self.layers[i] = self.layers[i] - (alpha * adj)
 
-    def train(self, x, y, alpha=0.01, epochs=10):
-        acc = list()
-        losses = list()
-
+    def train(self, x, y, alpha=0.01, epochs=10, batch_size=8000):
         for j in range(epochs):
-            l = list()
-            for i in range(len(x)):
-                if i % 500 == 0:
-                    print(f"Using the {i} example from the training set")
-                out = self.feed_forward(x[i])
-                l.append(ANN.loss(out[-1], y[i]))
-                self.back_propagation(x[i], y[i], alpha)
-            print("epochs:", j + 1, "======== acc:", (1-(sum(l)/len(x)))*100)
-            acc.append((1-(sum(l)/len(x)))*100)
-            losses.append(sum(l)/len(x))
-
-        return acc, losses
+            batch = random.choices(list(zip(x,y)), k=batch_size)
+            for i in range(len(batch)):
+                self.back_propagation(batch[i][0], batch[i][1], alpha)
+            print("epochs:", j + 1, "======== acc:", self.evaluate(x, y) * 100)
 
     def predict(self, x):
         output = self.feed_forward(x)[-1]
@@ -87,8 +77,7 @@ class ANN(object):
     def evaluate(self, validate_data, validate_tags):
         predictions = [self.predict(record) for record in validate_data]
         correct = len([x for x,y in zip(predictions, validate_tags) if (x==y).all()])
-        print(f"accuracy = {len(validate_tags) / correct}")
-        return len(validate_tags) / correct
+        return correct/ len(validate_tags)
 
 
     @staticmethod
