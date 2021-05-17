@@ -80,6 +80,17 @@ class ANN(object):
 
         return acc, losses
 
+    def predict(self, x):
+        output = self.feed_forward(x)[-1]
+        return np.int8(output == output.max())
+
+    def evaluate(self, validate_data, validate_tags):
+        predictions = [self.predict(record) for record in validate_data]
+        correct = len([x for x,y in zip(predictions, validate_tags) if (x==y).all()])
+        print(f"accuracy = {len(validate_tags) / correct}")
+        return len(validate_tags) / correct
+
+
     @staticmethod
     def loss(output, expected_output):
         s = np.square(output - expected_output)

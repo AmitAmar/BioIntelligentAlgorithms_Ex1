@@ -16,7 +16,7 @@ def load_data(train_csv_path: str, validate_csv_path: str) -> list:
    train_data = [x.reshape(1, len(train_data[0])) for x in train_data]
    train_tags = keras.utils.to_categorical(df_train[0].to_numpy() - 1)
 
-   validate_data = df_validate.drop(0, axis=1).to_numpy().transpose()
+   validate_data = df_validate.drop(0, axis=1).to_numpy()
    validate_data = [x.reshape(1, len(validate_data[0])) for x in validate_data]
    validate_tags = keras.utils.to_categorical(df_validate[0].to_numpy() - 1)
 
@@ -30,9 +30,11 @@ def main():
 
     # Creates a new ANN to be trained with the data
     ann = ANN(input_dim=3072, output_dim=10, hidden_layers=2, hidden_layer_length=400)
-    
+    #print(ann.predict(validate_data[0]))
+
     # Trains the ANN with the dataset
-    ann.train(train_data, train_tags, alpha=0.1, epochs=1)
+    ann.train(train_data, train_tags, alpha=0.1, epochs=10)
+    ann.evaluate(validate_data, validate_tags)
 
 
 if __name__ == "__main__":
