@@ -64,12 +64,11 @@ class ANN(object):
             adj = layers_output[i].transpose().dot(layers_error[i])
             self.layers[i] = self.layers[i] - (alpha * adj)
 
-    def train(self, x, y, alpha=0.01, epochs=10, batch_size=8000):
+    def train(self, x, y, alpha=0.01, epochs=10):
         for j in range(epochs):
-            batch = random.choices(list(zip(x,y)), k=batch_size)
-            for i in range(len(batch)):
-                self.back_propagation(batch[i][0], batch[i][1], alpha)
-            print("epochs:", j + 1, "======== acc:", self.evaluate(x, y) * 100)
+            for i in range(len(x)):
+                self.back_propagation(x[i], y[i], alpha)
+            # print("epochs:", j + 1, "======== acc:", self.evaluate(x, y) * 100)
 
     def predict(self, x):
         output = self.feed_forward(x)[-1]

@@ -1,12 +1,16 @@
+from os.path import isdir
 import numpy as np
 import pandas as pd
 import keras
+import os
 from ann import ANN
 
 
 TRAIN_CSV_PATH = r"../data/train.csv"
 VALIDATE_CSV_PATH = r"../data/validate.csv"
 
+EPOCHS = 100
+MODELS_DIR = "../models/"
 
 def load_data(train_csv_path: str, validate_csv_path: str) -> list:
    df_train = pd.read_csv(train_csv_path, header=None)
@@ -24,20 +28,25 @@ def load_data(train_csv_path: str, validate_csv_path: str) -> list:
 
 def main():
     # Fixes numpy's random seed
-    #np.random.seed(0)
+    np.random.seed(0)
 
-    #train_data, train_tags, validate_data, validate_tags = load_data(TRAIN_CSV_PATH, VALIDATE_CSV_PATH)
+    train_data, train_tags, validate_data, validate_tags = load_data(TRAIN_CSV_PATH, VALIDATE_CSV_PATH)
 
     # Creates a new ANN to be trained with the data
-    #ann = ANN(input_dim=3072, output_dim=10, hidden_layers=3, hidden_layer_length=400)
-    #print(ann.predict(validate_data[0]))
+    ann = ANN(input_dim=3072, output_dim=10, hidden_layers=3, hidden_layer_length=400)
 
-    # Trains the ANN with the dataset
-    #ann.train(train_data, train_tags, alpha=0.001, epochs=100)
-    #ann.evaluate(validate_data, validate_tags)
+    # Creates the model's directory if it doesn't exsist
+    if not os.path.isdir(MODELS_DIR):
+        os.mkdir(MODELS_DIR)
 
-    ann = ANN.load("mynet")
-    print(ann)
+    # Trains the ANN with the dataset, save the ANN to a file after each epoch
+    for i in range(EPOCHS):
+        ann.train(train_data, train_tags, alpha=0.001, epochs=1)
+        acc_train = ann.evaluate(train_data, train_tags)
+        acc_validate = ann.evaluate(validate_data, validate_tags)
+
+        model_file_name = f"{i}_{acc_train * 100}_{acc_validate * 100}.ann"
+        ann.save(os.path.join(MODELS_DIR, model_file_name))
 
 
 if __name__ == "__main__":
