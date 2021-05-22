@@ -24,17 +24,20 @@ def load_data(train_csv_path: str, validate_csv_path: str) -> list:
 
 def main():
     # Fixes numpy's random seed
-    np.random.seed(0)
+    #np.random.seed(0)
 
-    train_data, train_tags, validate_data, validate_tags = load_data(TRAIN_CSV_PATH, VALIDATE_CSV_PATH)
+    #train_data, train_tags, validate_data, validate_tags = load_data(TRAIN_CSV_PATH, VALIDATE_CSV_PATH)
 
     # Creates a new ANN to be trained with the data
-    ann = ANN(input_dim=3072, output_dim=10, hidden_layers=3, hidden_layer_length=400)
+    #ann = ANN(input_dim=3072, output_dim=10, hidden_layers=3, hidden_layer_length=400)
     #print(ann.predict(validate_data[0]))
 
     # Trains the ANN with the dataset
-    ann.train(train_data, train_tags, alpha=0.001, epochs=100)
-    ann.evaluate(validate_data, validate_tags)
+    #ann.train(train_data, train_tags, alpha=0.001, epochs=100)
+    #ann.evaluate(validate_data, validate_tags)
+
+    ann = ANN.load("mynet")
+    print(ann)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import pickle
 from activations_functions import *
 
 
@@ -79,6 +80,14 @@ class ANN(object):
         correct = len([x for x,y in zip(predictions, validate_tags) if (x==y).all()])
         return correct/ len(validate_tags)
 
+    def save(self, path: str):
+        with open(path, "wb") as file_:
+            pickle.dump(self, file_)
+
+    @staticmethod
+    def load(path):
+        with open(path, "rb") as file_:
+            return pickle.load(file_)
 
     @staticmethod
     def loss(output, expected_output):
@@ -87,5 +96,4 @@ class ANN(object):
         return s
 
     def __str__(self):
-        return str(f"Input weights: {self.input_layer_weights}\nHidden weights:{self.hidden_layers_weights}\nOutput weights:{self.output_layer_weights}")
-        #return f"input shape: {self.input_layer_weights.shape}, hidden shape: {self.hidden_layers_weights.shape}, output shape: {self.output_layer_weights.shape}"
+        return str(self.__dict__)
