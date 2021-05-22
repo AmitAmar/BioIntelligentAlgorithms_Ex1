@@ -28,6 +28,16 @@ class Relu(ActivationFunction):
 
     @staticmethod
     def derivative_function(x):
-        x[x <= 0] = 0
-        x[x > 0] = 1
-        return x
+        return np.where(x < 0, 0.01, 1)
+
+class Softmax(ActivationFunction):
+
+    @staticmethod
+    def activation_function(x):
+        exps = np.exp(x)
+        return exps / exps.sum()
+    
+    @staticmethod
+    def derivative_function(x):
+        s = x.reshape(-1, 1)
+        return np.diagflat(s) - np.dot(s, s.T)
