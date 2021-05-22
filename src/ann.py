@@ -1,37 +1,29 @@
+from os import name
 import numpy as np
 import random
 import pickle
+from collections import namedtuple
 from activations_functions import *
 
 
+Layer = namedtuple("Layer", ["activation_function", "weights"])
+
+
 class ANN(object):
-    def __init__(self, input_dim, output_dim, hidden_layers, hidden_layer_length, activation_function):
-        self.input_dim = input_dim
-        self.output_dim = output_dim
-        self.hidden_layers = hidden_layers
-        self.hidden_layer_length = hidden_layer_length
-        self.activation_function = activation_function
-
-        self.init_weights()
-
-    def init_weights(self):
+    def __init__(self):
         self.layers = list()
 
-        # In case that there are no hidden layers, connect the input and the output layer
-        if self.hidden_layers == 0:
-            self.layers.append(np.random.randn(self.input_dim, self.output_dim))
-            return
-        else:
-            self.layers.append(np.random.randn(self.input_dim, self.hidden_layer_length))
+    def add_layer(self, number_of_neurons, activation_function, input_dim=None):
 
-        for i in range(self.hidden_layers - 1):
-            self.layers.append(np.random.randn(self.hidden_layer_length, self.hidden_layer_length))
+        if len(self.layers) == 0 and input_dim is None:
+            raise ValueError("Input dim must be provided for the first layer!")
         
-        self.layers.append(np.random.randn(self.layers[-1].shape[1], self.output_dim))
-
-        # TODO: Remove this print, its here for debug purposes
-        for i in range(len(self.layers)):
-            print(f"Layer {i} shape: {self.layers[i].shape}")
+        prev_layer_size = input_dim
+        if len(self.layers) > 0:
+            prev_layer_size = self.layers[-1].weights.shape[1]
+        
+        self.layers.append(Layer(activation_function=activation_function,
+                                 weights=np.random.randn(prev_layer_size, number_of_neurons)))
 
     def feed_forward(self, x):
         layers_outputs = list()
@@ -41,7 +33,8 @@ class ANN(object):
 
         # Feed forward the output of each layer with its weights and activation function
         for i in range(len(self.layers)):
-            layers_outputs.append(self.activation_function.activation_function(layers_outputs[i].dot(self.layers[i])))
+            layer = self.layers[i]
+            layers_outputs.append(layer.activation_function.activation_function(layers_outputs[i].dot(layer.weights)))
         
         return layers_outputs
 
@@ -56,14 +49,16 @@ class ANN(object):
         # The first output in layers output is the input, so the ith layer output is in the i+1 index
         for i in range(len(self.layers) - 2, -1, -1):
             curr_error = np.multiply(
-                self.layers[i + 1].dot(layers_error[i + 1].transpose()).transpose(),
-                np.multiply(layers_output[i + 1], self.activation_function.derivative_function(layers_output[i + 1]))
+                self.layers[i + 1].weights.dot(layers_error[i + 1].transpose()).transpose(),
+                np.multiply(layers_output[i + 1], self.layers[i + 1].activation_function.derivative_function(layers_output[i + 1]))
             )
             layers_error[i] = curr_error
         
         for i in range(len(self.layers)):
             adj = layers_output[i].transpose().dot(layers_error[i])
-            self.layers[i] = self.layers[i] - (alpha * adj)
+            self.layers[i] = Layer(
+                activation_function=self.layers[i].activation_function,
+                weights=(self.layers[i].weights - (alpha * adj)))
 
     def train(self, x, y, alpha=0.01, epochs=10):
         for j in range(epochs):

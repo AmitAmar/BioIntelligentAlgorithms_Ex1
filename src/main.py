@@ -1,5 +1,5 @@
 from os.path import isdir
-from activations_functions import ActivationFunction, Sigmoid, Relu
+from activations_functions import ActivationFunction, Sigmoid, Relu, Softmax
 import numpy as np
 import pandas as pd
 import keras
@@ -31,11 +31,18 @@ def main():
     # Fixes numpy's random seed
     np.random.seed(0)
 
+    start_epoch = 0
+    ann = ANN()
+    ann.add_layer(number_of_neurons=400, activation_function=Sigmoid, input_dim=3072)
+    ann.add_layer(number_of_neurons=400, activation_function=Sigmoid)
+    ann.add_layer(number_of_neurons=10, activation_function=Sigmoid)
+    print(ann)
+
     train_data, train_tags, validate_data, validate_tags = load_data(TRAIN_CSV_PATH, VALIDATE_CSV_PATH)
 
     # Creates a new ANN to be trained with the data
-    start_epoch = 0
-    ann = ANN(input_dim=3072, output_dim=10, hidden_layers=2, hidden_layer_length=400, activation_function=Relu)
+    #start_epoch = 0
+    #ann = ANN(input_dim=3072, output_dim=10, hidden_layers=2, hidden_layer_length=400, activation_function=Relu)
 
     #last_model_path = os.path.join(MODELS_DIR, "99_64.67500000000001_27.0.ann")
     #start_epoch = 100
