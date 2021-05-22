@@ -5,11 +5,12 @@ from activations_functions import *
 
 
 class ANN(object):
-    def __init__(self, input_dim, output_dim, hidden_layers, hidden_layer_length):
+    def __init__(self, input_dim, output_dim, hidden_layers, hidden_layer_length, activation_function):
         self.input_dim = input_dim
         self.output_dim = output_dim
         self.hidden_layers = hidden_layers
         self.hidden_layer_length = hidden_layer_length
+        self.activation_function = activation_function
 
         self.init_weights()
 
@@ -40,7 +41,7 @@ class ANN(object):
 
         # Feed forward the output of each layer with its weights and activation function
         for i in range(len(self.layers)):
-            layers_outputs.append(sigmoid(layers_outputs[i].dot(self.layers[i])))
+            layers_outputs.append(self.activation_function.activation_function(layers_outputs[i].dot(self.layers[i])))
         
         return layers_outputs
 
@@ -56,7 +57,7 @@ class ANN(object):
         for i in range(len(self.layers) - 2, -1, -1):
             curr_error = np.multiply(
                 self.layers[i + 1].dot(layers_error[i + 1].transpose()).transpose(),
-                np.multiply(layers_output[i + 1], 1 - layers_output[i + 1])
+                np.multiply(layers_output[i + 1], self.activation_function.derivative_function(layers_output[i + 1]))
             )
             layers_error[i] = curr_error
         

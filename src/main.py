@@ -1,4 +1,5 @@
 from os.path import isdir
+from activations_functions import ActivationFunction, Sigmoid, Relu
 import numpy as np
 import pandas as pd
 import keras
@@ -33,14 +34,21 @@ def main():
     train_data, train_tags, validate_data, validate_tags = load_data(TRAIN_CSV_PATH, VALIDATE_CSV_PATH)
 
     # Creates a new ANN to be trained with the data
-    ann = ANN(input_dim=3072, output_dim=10, hidden_layers=3, hidden_layer_length=400)
+    start_epoch = 0
+    ann = ANN(input_dim=3072, output_dim=10, hidden_layers=2, hidden_layer_length=400, activation_function=Relu)
+
+    #last_model_path = os.path.join(MODELS_DIR, "99_64.67500000000001_27.0.ann")
+    #start_epoch = 100
+    #ann = ANN.load(last_model_path)
+    #print(f"Loaded model from path: \"{last_model_path}\", starting with epoch: {start_epoch}")
+    #print(ann)
 
     # Creates the model's directory if it doesn't exsist
     if not os.path.isdir(MODELS_DIR):
         os.mkdir(MODELS_DIR)
 
     # Trains the ANN with the dataset, save the ANN to a file after each epoch
-    for i in range(EPOCHS):
+    for i in range(start_epoch, EPOCHS + start_epoch):
         ann.train(train_data, train_tags, alpha=0.001, epochs=1)
         acc_train = ann.evaluate(train_data, train_tags)
         acc_validate = ann.evaluate(validate_data, validate_tags)
