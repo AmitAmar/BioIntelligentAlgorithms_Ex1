@@ -33,8 +33,8 @@ class Sigmoid(ActivationFunction):
 
 class Relu(ActivationFunction):
 
-    MIN_INIT_WEIGHT = -0.001
-    MAX_INIT_WEIGHT = 0.001
+    MIN_INIT_WEIGHT = -0.01
+    MAX_INIT_WEIGHT = 0.01
 
     @staticmethod
     def rand_distribution(shape):
@@ -50,6 +50,13 @@ class Relu(ActivationFunction):
 
 
 class Softmax(ActivationFunction):
+
+    MIN_INIT_WEIGHT = -0.01
+    MAX_INIT_WEIGHT = 0.01
+
+    # @staticmethod
+    # def rand_distribution(shape):
+    #     return np.random.uniform(Softmax.MIN_INIT_WEIGHT, Softmax.MAX_INIT_WEIGHT, shape)
 
     @staticmethod
     def rand_distribution(shape):
