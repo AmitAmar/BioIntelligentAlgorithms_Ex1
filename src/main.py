@@ -60,7 +60,8 @@ def main():
         acc_train = ann.evaluate(train_data, train_tags)
         acc_validate = ann.evaluate(validate_data, validate_tags)
 
-        model_file_name = f"{i}_{acc_train * 100}_{acc_validate * 100}" + ANN.EXTENSION
+        model_file_name = f"{i}_{acc_train * 100:.3f}_{acc_validate * 100:.3f}" + ANN.EXTENSION
+        print(f"Train accuracy: {acc_train * 100:.3f}, Validate accuracy: {acc_validate * 100:.3f}")
         ann.save(os.path.join(MODELS_DIR, model_file_name))
 
 

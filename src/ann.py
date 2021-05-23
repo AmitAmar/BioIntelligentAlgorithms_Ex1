@@ -63,10 +63,17 @@ class ANN(object):
                 activation_function=self.layers[i].activation_function,
                 weights=(self.layers[i].weights - (alpha * adj)))
 
+    @staticmethod
+    def noise(x, noise_factor=0.01):
+        number_of_noises = int(x.shape[1] * noise_factor)
+        a = np.array([0] * number_of_noises + [1] * (x.shape[1] - number_of_noises))
+        np.random.shuffle(a)
+        return x * a
+
     def train(self, x, y, alpha=0.01, epochs=10):
         for j in range(epochs):
             for i in range(len(x)):
-                self.back_propagation(x[i], y[i], alpha)
+                self.back_propagation(ANN.noise(x[i]), y[i], alpha)
             # print("epochs:", j + 1, "======== acc:", self.evaluate(x, y) * 100)
 
     def predict(self, x):
@@ -76,7 +83,7 @@ class ANN(object):
     def evaluate(self, validate_data, validate_tags):
         predictions = [self.predict(record) for record in validate_data]
         correct = len([x for x,y in zip(predictions, validate_tags) if (x==y).all()])
-        return correct/ len(validate_tags)
+        return correct / len(validate_tags)
 
     def save(self, path: str):
         with open(path, "wb") as file_:
