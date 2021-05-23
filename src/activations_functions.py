@@ -31,7 +31,7 @@ class Relu(ActivationFunction):
 
     @staticmethod
     def derivative_function(x):
-        return np.where(x < 0, 0.01, 1)
+        return np.where(x < 0, 0, 1)
 
 
 class Softmax(ActivationFunction):
