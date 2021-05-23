@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import keras
 import os
+import utils
 from ann import ANN
 
 
@@ -13,7 +14,8 @@ VALIDATE_CSV_PATH = r"../data/validate.csv"
 EPOCHS = 100
 MODELS_DIR = "../models/"
 
-def load_data(train_csv_path: str, validate_csv_path: str) -> list:
+
+def load_data(train_csv_path: str, validate_csv_path: str):
    df_train = pd.read_csv(train_csv_path, header=None)
    df_validate = pd.read_csv(validate_csv_path, header=None)
 
@@ -26,6 +28,7 @@ def load_data(train_csv_path: str, validate_csv_path: str) -> list:
    validate_tags = keras.utils.to_categorical(df_validate[0].to_numpy() - 1)
 
    return train_data, train_tags, validate_data, validate_tags
+
 
 def main():
     # Fixes numpy's random seed
@@ -50,9 +53,7 @@ def main():
     #print(f"Loaded model from path: \"{last_model_path}\", starting with epoch: {start_epoch}")
     #print(ann)
 
-    # Creates the model's directory if it doesn't exsist
-    if not os.path.isdir(MODELS_DIR):
-        os.mkdir(MODELS_DIR)
+    utils.create_output_dir(MODELS_DIR)
 
     # Trains the ANN with the dataset, save the ANN to a file after each epoch
     for i in range(start_epoch, EPOCHS + start_epoch):
@@ -60,7 +61,7 @@ def main():
         acc_train = ann.evaluate(train_data, train_tags)
         acc_validate = ann.evaluate(validate_data, validate_tags)
 
-        model_file_name = f"{i}_{acc_train * 100}_{acc_validate * 100}.ann"
+        model_file_name = f"{i}_{acc_train * 100}_{acc_validate * 100}" + ANN.EXTENSION
         ann.save(os.path.join(MODELS_DIR, model_file_name))
 
 

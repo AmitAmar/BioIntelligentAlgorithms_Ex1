@@ -10,6 +10,7 @@ Layer = namedtuple("Layer", ["activation_function", "weights"])
 
 
 class ANN(object):
+    EXTENSION = '.ann'
     def __init__(self):
         self.layers = list()
 
