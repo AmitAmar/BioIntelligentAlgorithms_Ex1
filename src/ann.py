@@ -11,6 +11,7 @@ Layer = namedtuple("Layer", ["activation_function", "weights"])
 
 class ANN(object):
     EXTENSION = '.ann'
+
     def __init__(self):
         self.layers = list()
 
@@ -51,7 +52,8 @@ class ANN(object):
         for i in range(len(self.layers) - 2, -1, -1):
             curr_error = np.multiply(
                 self.layers[i + 1].weights.dot(layers_error[i + 1].transpose()).transpose(),
-                np.multiply(layers_output[i + 1], self.layers[i + 1].activation_function.derivative_function(layers_output[i + 1]))
+                np.multiply(layers_output[i + 1],
+                            self.layers[i].activation_function.derivative_function(layers_output[i + 1]))
             )
             layers_error[i] = curr_error
         
