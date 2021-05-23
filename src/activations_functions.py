@@ -4,6 +4,10 @@ import numpy as np
 class ActivationFunction(object):
 
     @staticmethod
+    def rand_distribution(shape):
+        raise NotImplementedError()
+
+    @staticmethod
     def activation_function(x):
         raise NotImplementedError()
     
@@ -13,6 +17,10 @@ class ActivationFunction(object):
 
 
 class Sigmoid(ActivationFunction):
+
+    @staticmethod
+    def rand_distribution(shape):
+        return np.random.randn(*shape)
 
     @staticmethod
     def activation_function(x):
@@ -25,16 +33,28 @@ class Sigmoid(ActivationFunction):
 
 class Relu(ActivationFunction):
 
+    MIN_INIT_WEIGHT = -0.001
+    MAX_INIT_WEIGHT = 0.001
+
+    @staticmethod
+    def rand_distribution(shape):
+        return np.random.uniform(Relu.MIN_INIT_WEIGHT, Relu.MAX_INIT_WEIGHT, shape)
+
     @staticmethod
     def activation_function(x):
         return np.maximum(x, 0)
 
     @staticmethod
     def derivative_function(x):
-        return np.where(x < 0, 0, 1)
+        return np.where(x <= 0, 0, 1)
 
 
 class Softmax(ActivationFunction):
+
+    @staticmethod
+    def rand_distribution(shape):
+        return np.random.randn(*shape)
+
     @staticmethod
     def activation_function(x):
         exps = np.exp(x)

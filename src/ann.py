@@ -25,7 +25,7 @@ class ANN(object):
             prev_layer_size = self.layers[-1].weights.shape[1]
         
         self.layers.append(Layer(activation_function=activation_function,
-                                 weights=np.random.randn(prev_layer_size, number_of_neurons)))
+                                 weights=activation_function.rand_distribution((prev_layer_size, number_of_neurons))))
 
     def feed_forward(self, x):
         layers_outputs = list()
