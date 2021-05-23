@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class ActivationFunction(object):
 
     @staticmethod
@@ -9,6 +10,7 @@ class ActivationFunction(object):
     @staticmethod
     def derivative_function(x):
         raise NotImplementedError()
+
 
 class Sigmoid(ActivationFunction):
 
@@ -20,6 +22,7 @@ class Sigmoid(ActivationFunction):
     def derivative_function(x):
         return 1 - x
 
+
 class Relu(ActivationFunction):
 
     @staticmethod
@@ -30,14 +33,14 @@ class Relu(ActivationFunction):
     def derivative_function(x):
         return np.where(x < 0, 0.01, 1)
 
-class Softmax(ActivationFunction):
 
+class Softmax(ActivationFunction):
     @staticmethod
     def activation_function(x):
         exps = np.exp(x)
         return exps / exps.sum()
     
-    @staticmethod
-    def derivative_function(x):
-        s = x.reshape(-1, 1)
-        return np.diagflat(s) - np.dot(s, s.T)
+    # @staticmethod
+    # def derivative_function(x):
+    #     s = x.reshape(-1, 1)
+    #     return np.diagflat(s) - np.dot(s, s.T)
