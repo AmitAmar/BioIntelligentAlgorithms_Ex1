@@ -2,7 +2,7 @@ from os.path import isdir
 from activations_functions import ActivationFunction, Sigmoid, Relu, Softmax
 import numpy as np
 import pandas as pd
-import keras
+from tensorflow import keras
 import os
 import utils
 from ann import ANN
@@ -56,6 +56,7 @@ def main():
 
     utils.create_output_dir(MODELS_DIR)
 
+    print(f"Starting the ANN train process...\n")
     # Trains the ANN with the dataset, save the ANN to a file after each epoch
     for i in range(start_epoch, EPOCHS + start_epoch):
         ann.train(train_data, train_tags, alpha=0.001, epochs=1)
@@ -63,7 +64,7 @@ def main():
         acc_validate = ann.evaluate(validate_data, validate_tags)
 
         model_file_name = f"{i}_{acc_train * 100:.3f}_{acc_validate * 100:.3f}" + ANN.EXTENSION
-        print(f"Train accuracy: {acc_train * 100:.3f}, Validate accuracy: {acc_validate * 100:.3f}")
+        print(f"Epoch: {i}, Train accuracy: {acc_train * 100:.3f}, Validate accuracy: {acc_validate * 100:.3f}")
         ann.save(os.path.join(MODELS_DIR, model_file_name))
 
 

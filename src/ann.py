@@ -44,16 +44,17 @@ class ANN(object):
         layers_output = self.feed_forward(x)
         layers_error = [0] * len(self.layers)
 
-        output_error = (layers_output[-1] - y)
+        output_error = ANN.loss(layers_output[-1], y)
         layers_error[-1] = output_error
 
         # len() - 1 is the already calculated output layer
         # The first output in layers output is the input, so the ith layer output is in the i+1 index
         for i in range(len(self.layers) - 2, -1, -1):
             curr_error = np.multiply(
-                self.layers[i + 1].weights.dot(layers_error[i + 1].transpose()).transpose(),
-                np.multiply(layers_output[i + 1],
-                            self.layers[i].activation_function.derivative_function(layers_output[i + 1]))
+                self.layers[i + 1].weights.dot(
+                    layers_error[i + 1].transpose()).transpose(),
+                    np.multiply(layers_output[i + 1],
+                                self.layers[i].activation_function.derivative_function(layers_output[i + 1]))
             )
             layers_error[i] = curr_error
         
@@ -74,7 +75,6 @@ class ANN(object):
         for j in range(epochs):
             for i in range(len(x)):
                 self.back_propagation(ANN.noise(x[i]), y[i], alpha)
-            # print("epochs:", j + 1, "======== acc:", self.evaluate(x, y) * 100)
 
     def predict(self, x):
         output = self.feed_forward(x)[-1]
@@ -96,13 +96,7 @@ class ANN(object):
 
     @staticmethod
     def loss(output, expected_output):
-        #1.
-        # s = np.square(output - expected_output)
-        # s = np.sum(s) / len(expected_output)
-        # return s
-
-        #2.
-        return -sum([output[i] * math.log2(expected_output[i]) for i in range(len(output))])
+        return expected_output - output
 
     def __str__(self):
         return str(self.__dict__)
