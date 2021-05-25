@@ -4,7 +4,7 @@ import random
 import pickle
 from collections import namedtuple
 from activations_functions import *
-
+import math
 
 Layer = namedtuple("Layer", ["activation_function", "weights"])
 
@@ -96,9 +96,13 @@ class ANN(object):
 
     @staticmethod
     def loss(output, expected_output):
-        s = np.square(output - expected_output)
-        s = np.sum(s) / len(expected_output)
-        return s
+        #1.
+        # s = np.square(output - expected_output)
+        # s = np.sum(s) / len(expected_output)
+        # return s
+
+        #2.
+        return -sum([output[i] * math.log2(expected_output[i]) for i in range(len(output))])
 
     def __str__(self):
         return str(self.__dict__)

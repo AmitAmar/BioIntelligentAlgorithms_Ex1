@@ -20,6 +20,8 @@ def load_data(train_csv_path: str, validate_csv_path: str):
 
     train_data = df_train.drop(0, axis=1).to_numpy()
     train_data = [x.reshape(1, len(train_data[0])) for x in train_data]
+
+    #TODO: DONT USE KERASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS!~!~!~!~!~!~~~!!~
     train_tags = keras.utils.to_categorical(df_train[0].to_numpy() - 1)
 
     validate_data = df_validate.drop(0, axis=1).to_numpy()
