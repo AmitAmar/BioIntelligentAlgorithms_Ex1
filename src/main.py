@@ -2,7 +2,6 @@ from os.path import isdir
 from activations_functions import ActivationFunction, Sigmoid, Relu, Softmax
 import numpy as np
 import pandas as pd
-from tensorflow import keras
 import os
 import utils
 from ann import ANN
@@ -21,14 +20,12 @@ def load_data(train_csv_path: str, validate_csv_path: str):
     train_data = df_train.drop(0, axis=1).to_numpy()
     train_data = [x.reshape(1, len(train_data[0])) for x in train_data]
 
-    train_tags = keras.utils.to_categorical(df_train[0].to_numpy() - 1)
-    # train_tags = utils.to_categorical(df_train[0].to_numpy() - 1)
+    train_tags = utils.to_categorical(df_train[0].to_numpy() - 1)
 
     validate_data = df_validate.drop(0, axis=1).to_numpy()
     validate_data = [x.reshape(1, len(validate_data[0])) for x in validate_data]
 
-    validate_tags = keras.utils.to_categorical(df_validate[0].to_numpy() - 1)
-    # validate_tags = utils.to_categorical(df_validate[0].to_numpy() - 1)
+    validate_tags = utils.to_categorical(df_validate[0].to_numpy() - 1)
 
     return train_data, train_tags, validate_data, validate_tags
 
