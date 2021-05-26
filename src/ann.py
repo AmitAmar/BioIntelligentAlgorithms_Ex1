@@ -96,7 +96,7 @@ class ANN(object):
 
     @staticmethod
     def loss(output, expected_output):
-        return expected_output - output
+        return output - expected_output
 
     def __str__(self):
         return str(self.__dict__)
