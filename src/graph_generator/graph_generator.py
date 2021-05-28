@@ -4,7 +4,7 @@ from os.path import isfile, join
 import matplotlib.pyplot as plt
 from ann_sample import AnnSample
 
-PATH = r'../../models/'
+MODELS_PATH = r'../../models/'
 
 
 def get_all_files_names_in_folder(path):
@@ -22,11 +22,12 @@ def parse_samples(files_names):
 
 
 def draw_graph(samples):
-    x = [sample.index for sample in samples]
+    epochs = [sample.index for sample in samples]
     train = [sample.train for sample in samples]
     validate = [sample.validate for sample in samples]
-    plt.plot(x, train, label='train')
-    plt.plot(x, validate, label='validate')
+
+    plt.plot(epochs, train, label='train')
+    plt.plot(epochs, validate, label='validate')
     plt.xlabel("Epoch")
     plt.ylabel("Accuracy")
     plt.title("Train & Validate")
@@ -35,10 +36,8 @@ def draw_graph(samples):
 
 
 def main():
-    files_names = get_all_files_names_in_folder(PATH)
-
+    files_names = get_all_files_names_in_folder(MODELS_PATH)
     samples = parse_samples(files_names)
-
     draw_graph(samples)
 
 
