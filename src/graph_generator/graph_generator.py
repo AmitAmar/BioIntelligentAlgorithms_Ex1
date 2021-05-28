@@ -21,15 +21,10 @@ def parse_samples(files_names):
     return ann_samples
 
 
-def main():
-    files_names = get_all_files_names_in_folder(PATH)
-
-    samples = parse_samples(files_names)
-
+def draw_graph(samples):
     x = [sample.index for sample in samples]
     train = [sample.train for sample in samples]
     validate = [sample.validate for sample in samples]
-
     plt.plot(x, train, label='train')
     plt.plot(x, validate, label='validate')
     plt.xlabel("Epoch")
@@ -37,6 +32,14 @@ def main():
     plt.title("Train & Validate")
     plt.legend()
     plt.show()
+
+
+def main():
+    files_names = get_all_files_names_in_folder(PATH)
+
+    samples = parse_samples(files_names)
+
+    draw_graph(samples)
 
 
 if __name__ == '__main__':
