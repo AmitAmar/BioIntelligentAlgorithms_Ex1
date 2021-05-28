@@ -26,13 +26,16 @@ def main():
 
     samples = parse_samples(files_names)
 
-    x = [sample.train for sample in samples]
-    y = [sample.validate for sample in samples]
+    x = [sample.index for sample in samples]
+    train = [sample.train for sample in samples]
+    validate = [sample.validate for sample in samples]
 
-    plt.plot(x, y)
-    plt.xlabel("TRAIN")
-    plt.ylabel("VALIDATE")
-    plt.title("Train VS Validate")
+    plt.plot(x, train, label='train')
+    plt.plot(x, validate, label='validate')
+    plt.xlabel("Epoch")
+    plt.ylabel("Accuracy")
+    plt.title("Train & Validate")
+    plt.legend()
     plt.show()
 
 
