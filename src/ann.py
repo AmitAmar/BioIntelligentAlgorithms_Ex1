@@ -44,7 +44,7 @@ class ANN(object):
         layers_output = self.feed_forward(x)
         layers_error = [0] * len(self.layers)
 
-        output_error = ANN.loss(layers_output[-1], y)
+        output_error = ANN.loss(layers_output[-1], y, layers_output[-2])
         layers_error[-1] = output_error
 
         # len() - 1 is the already calculated output layer
@@ -95,8 +95,14 @@ class ANN(object):
             return pickle.load(file_)
 
     @staticmethod
-    def loss(output, expected_output):
+    def softmax_derivative(x):
+        exps = np.exp(x - x.max())
+        return exps / np.sum(exps, axis=0) * (1 - exps / np.sum(exps, axis=0))
+
+    @staticmethod
+    def loss(output, expected_output, prev_layer_output):
         return output - expected_output
+        #return 2 * (output - expected_output) / output.shape[0] * ANN.softmax_derivative(prev_layer_output).transpose()
 
     def __str__(self):
         return str(self.__dict__)

@@ -20,7 +20,7 @@ class Sigmoid(ActivationFunction):
 
     @staticmethod
     def rand_distribution(shape):
-        return np.random.randn(*shape)
+        return np.random.randn(*shape) * np.sqrt(1. / shape[0])
 
     @staticmethod
     def activation_function(x):
@@ -60,7 +60,7 @@ class Softmax(ActivationFunction):
 
     @staticmethod
     def rand_distribution(shape):
-        return np.random.randn(*shape)
+        return np.random.randn(*shape) * np.sqrt(1. / shape[0])
 
     @staticmethod
     def activation_function(x):
