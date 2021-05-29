@@ -8,7 +8,7 @@ MODELS_PATH = r'../../models/'
 
 
 def get_all_files_names_in_folder(path):
-    return [f for f in listdir(path) if isfile(join(path, f))]
+    return [f.replace('.ann', '') for f in listdir(path) if isfile(join(path, f))]
 
 
 def parse_samples(files_names):
@@ -23,8 +23,8 @@ def parse_samples(files_names):
 
 def draw_graph(samples):
     epochs = [sample.index for sample in samples]
-    train = [sample.train for sample in samples]
-    validate = [sample.validate for sample in samples]
+    train = [float(sample.train) for sample in samples]
+    validate = [float(sample.validate) for sample in samples]
 
     plt.plot(epochs, train, label='train')
     plt.plot(epochs, validate, label='validate')
