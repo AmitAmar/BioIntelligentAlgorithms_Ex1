@@ -15,7 +15,7 @@ def parse_samples(files_names):
     ann_samples = list()
     for name in files_names:
         chunks = name.split("_")
-        ann_samples.append(AnnSample(chunks[0], chunks[1], chunks[2]))
+        ann_samples.append(AnnSample(chunks[0], float(chunks[1]), float(chunks[2])))
     ann_samples.sort(key=lambda sample: sample.index)
 
     return ann_samples
@@ -23,8 +23,8 @@ def parse_samples(files_names):
 
 def draw_graph(samples):
     epochs = [sample.index for sample in samples]
-    train = [float(sample.train) for sample in samples]
-    validate = [float(sample.validate) for sample in samples]
+    train = [sample.train for sample in samples]
+    validate = [sample.validate for sample in samples]
 
     plt.plot(epochs, train, label='train')
     plt.plot(epochs, validate, label='validate')
