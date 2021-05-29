@@ -1,6 +1,8 @@
 from os import listdir
 from os.path import isfile, join
+import numpy as np
 
+import ipdb
 import matplotlib.pyplot as plt
 from ann_sample import AnnSample
 
@@ -15,14 +17,17 @@ def parse_samples(files_names):
     ann_samples = list()
     for name in files_names:
         chunks = name.split("_")
-        ann_samples.append(AnnSample(chunks[0], float(chunks[1]), float(chunks[2])))
-    ann_samples.sort(key=lambda sample: sample.index)
+        try:
+            ann_samples.append(AnnSample(chunks[0], float(chunks[1]), float(chunks[2])))
+        except ValueError:
+            continue
+    ann_samples.sort(key=lambda sample: int(sample.index))
 
     return ann_samples
 
 
 def draw_graph(samples):
-    epochs = [sample.index for sample in samples]
+    epochs = [int(sample.index) for sample in samples]
     train = [sample.train for sample in samples]
     validate = [sample.validate for sample in samples]
 
@@ -31,6 +36,7 @@ def draw_graph(samples):
     plt.xlabel("Epoch")
     plt.ylabel("Accuracy")
     plt.title("Train & Validate")
+    plt.xticks(np.arange(min(epochs), max(epochs)+1, 10.0))
     plt.legend()
     plt.show()
 
