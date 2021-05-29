@@ -1,6 +1,6 @@
 import os
-
 import numpy as np
+import pandas as pd
 
 
 def create_output_dir(dir_path):
@@ -28,3 +28,24 @@ def to_categorical(vector, num_classes=10):
     categorical = np.reshape(categorical, output_shape)
 
     return categorical
+
+
+def from_categorical(vector: np.ndarray) -> int:
+    try:
+        return vector.tolist()[0].index(1)
+    except ValueError:
+        import ipdb; ipdb.set_trace()
+
+
+def load_dataset(dataset_path: str):
+    df = pd.read_csv(dataset_path, header=None)
+
+    data = df.drop(0, axis=1).to_numpy()
+    data = [x.reshape(1, len(data[0])) for x in data]
+
+    try:
+        tags = to_categorical(df[0].to_numpy())
+    except ValueError:
+        tags = to_categorical(np.array([0] * len(data)))
+
+    return data, tags
