@@ -1,26 +1,24 @@
 import numpy as np
 
+np.random.seed(0)
+
 
 class ActivationFunction(object):
 
     @staticmethod
     def rand_distribution(shape):
-        raise NotImplementedError()
+        return np.random.randn(*shape) * np.sqrt(1. / shape[0])
 
     @staticmethod
     def activation_function(x):
         raise NotImplementedError()
-    
+
     @staticmethod
     def derivative_function(x):
         raise NotImplementedError()
 
 
 class Sigmoid(ActivationFunction):
-
-    @staticmethod
-    def rand_distribution(shape):
-        return np.random.randn(*shape) * np.sqrt(1. / shape[0])
 
     @staticmethod
     def activation_function(x):
@@ -33,13 +31,6 @@ class Sigmoid(ActivationFunction):
 
 class Relu(ActivationFunction):
 
-    MIN_INIT_WEIGHT = -0.01
-    MAX_INIT_WEIGHT = 0.01
-
-    @staticmethod
-    def rand_distribution(shape):
-        return np.random.uniform(Relu.MIN_INIT_WEIGHT, Relu.MAX_INIT_WEIGHT, shape)
-
     @staticmethod
     def activation_function(x):
         return np.maximum(x, 0)
@@ -50,17 +41,6 @@ class Relu(ActivationFunction):
 
 
 class Softmax(ActivationFunction):
-
-    MIN_INIT_WEIGHT = -0.01
-    MAX_INIT_WEIGHT = 0.01
-
-    # @staticmethod
-    # def rand_distribution(shape):
-    #     return np.random.uniform(Softmax.MIN_INIT_WEIGHT, Softmax.MAX_INIT_WEIGHT, shape)
-
-    @staticmethod
-    def rand_distribution(shape):
-        return np.random.randn(*shape) * np.sqrt(1. / shape[0])
 
     @staticmethod
     def activation_function(x):

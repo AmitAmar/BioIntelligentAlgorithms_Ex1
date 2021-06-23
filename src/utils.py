@@ -37,14 +37,24 @@ def from_categorical(vector: np.ndarray) -> int:
         import ipdb; ipdb.set_trace()
 
 
+def normalize_data(data):
+    new_data = list()
+    for i in range(len(data)):
+        record = data[i]
+        record = (record - record.mean()) / record.std()
+        new_data.append(record)
+    return new_data
+
+
 def load_dataset(dataset_path: str):
     df = pd.read_csv(dataset_path, header=None)
 
     data = df.drop(0, axis=1).to_numpy()
     data = [x.reshape(1, len(data[0])) for x in data]
+    data = normalize_data(data)
 
     try:
-        tags = to_categorical(df[0].to_numpy())
+        tags = to_categorical(df[0].to_numpy().replace('?', 1) - 1)
     except ValueError:
         tags = to_categorical(np.array([0] * len(data)))
 

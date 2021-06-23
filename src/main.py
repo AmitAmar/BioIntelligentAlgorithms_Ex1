@@ -1,64 +1,36 @@
-from os.path import isdir
 from activations_functions import ActivationFunction, Sigmoid, Relu, Softmax
 import numpy as np
-import pandas as pd
 import os
-import utils
+from utils import load_dataset, create_output_dir
 from ann import ANN
 
 TRAIN_CSV_PATH = r"../data/train.csv"
 VALIDATE_CSV_PATH = r"../data/validate.csv"
-
-EPOCHS = 100
 MODELS_DIR = "../models/"
 
-
-def load_data(train_csv_path: str, validate_csv_path: str):
-    df_train = pd.read_csv(train_csv_path, header=None)
-    df_validate = pd.read_csv(validate_csv_path, header=None)
-
-    train_data = df_train.drop(0, axis=1).to_numpy()
-    train_data = [x.reshape(1, len(train_data[0])) for x in train_data]
-
-    train_tags = utils.to_categorical(df_train[0].to_numpy() - 1)
-
-    validate_data = df_validate.drop(0, axis=1).to_numpy()
-    validate_data = [x.reshape(1, len(validate_data[0])) for x in validate_data]
-
-    validate_tags = utils.to_categorical(df_validate[0].to_numpy() - 1)
-
-    return train_data, train_tags, validate_data, validate_tags
+EPOCHS = 100
+START_EPOCH = 0
 
 
 def main():
     # Fixes numpy's random seed
     np.random.seed(0)
 
-    start_epoch = 0
+    print(f"Loading train and validate datasets...")
+    train_data, train_tags = load_dataset(TRAIN_CSV_PATH)
+    validate_data, validate_tags = load_dataset(VALIDATE_CSV_PATH)
+    print(f"Loaded datasets successfully")
+
     ann = ANN()
-    ann.add_layer(number_of_neurons=400, activation_function=Sigmoid, input_dim=3072)
-    ann.add_layer(number_of_neurons=400, activation_function=Sigmoid)
+    ann.add_layer(number_of_neurons=256, activation_function=Relu, input_dim=3072)
+    ann.add_layer(number_of_neurons=128, activation_function=Relu)
     ann.add_layer(number_of_neurons=10, activation_function=Softmax)
-    print(ann)
 
-    train_data, train_tags, validate_data, validate_tags = load_data(TRAIN_CSV_PATH, VALIDATE_CSV_PATH)
+    create_output_dir(MODELS_DIR)
 
-    # Creates a new ANN to be trained with the data
-    # start_epoch = 0
-    # ann = ANN(input_dim=3072, output_dim=10, hidden_layers=2, hidden_layer_length=400, activation_function=Relu)
-
-    # last_model_path = os.path.join(MODELS_DIR, "99_64.67500000000001_27.0.ann")
-    # start_epoch = 100
-    # ann = ANN.load(last_model_path)
-    # print(f"Loaded model from path: \"{last_model_path}\", starting with epoch: {start_epoch}")
-    # print(ann)
-
-    utils.create_output_dir(MODELS_DIR)
-
-    print(f"Starting the ANN train process...\n")
-    # Trains the ANN with the dataset, save the ANN to a file after each epoch
-    for i in range(start_epoch, EPOCHS + start_epoch):
-        ann.train(train_data, train_tags, alpha=0.001, epochs=1)
+    print(f"Starting the ANN train process...")
+    for i in range(START_EPOCH, EPOCHS + START_EPOCH):
+        ann.train(train_data, train_tags, alpha=0.0005, epochs=1, noise_factor=0.8)
         acc_train = ann.evaluate(train_data, train_tags)
         acc_validate = ann.evaluate(validate_data, validate_tags)
 

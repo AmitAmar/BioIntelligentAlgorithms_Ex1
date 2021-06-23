@@ -1,10 +1,8 @@
-from os import name
 import numpy as np
-import random
 import pickle
 from collections import namedtuple
-from activations_functions import *
-import math
+
+np.random.seed(0)
 
 Layer = namedtuple("Layer", ["activation_function", "weights"])
 
@@ -19,11 +17,11 @@ class ANN(object):
 
         if len(self.layers) == 0 and input_dim is None:
             raise ValueError("Input dim must be provided for the first layer!")
-        
+
         prev_layer_size = input_dim
         if len(self.layers) > 0:
             prev_layer_size = self.layers[-1].weights.shape[1]
-        
+
         self.layers.append(Layer(activation_function=activation_function,
                                  weights=activation_function.rand_distribution((prev_layer_size, number_of_neurons))))
 
@@ -37,14 +35,14 @@ class ANN(object):
         for i in range(len(self.layers)):
             layer = self.layers[i]
             layers_outputs.append(layer.activation_function.activation_function(layers_outputs[i].dot(layer.weights)))
-        
+
         return layers_outputs
 
     def back_propagation(self, x, y, alpha):
         layers_output = self.feed_forward(x)
         layers_error = [0] * len(self.layers)
 
-        output_error = ANN.loss(layers_output[-1], y, layers_output[-2])
+        output_error = ANN.loss(layers_output[-1], y)
         layers_error[-1] = output_error
 
         # len() - 1 is the already calculated output layer
@@ -57,7 +55,7 @@ class ANN(object):
                                 self.layers[i].activation_function.derivative_function(layers_output[i + 1]))
             )
             layers_error[i] = curr_error
-        
+
         for i in range(len(self.layers)):
             adj = layers_output[i].transpose().dot(layers_error[i])
             self.layers[i] = Layer(
@@ -65,16 +63,16 @@ class ANN(object):
                 weights=(self.layers[i].weights - (alpha * adj)))
 
     @staticmethod
-    def noise(x, noise_factor=0.01):
+    def noise(x, noise_factor):
         number_of_noises = int(x.shape[1] * noise_factor)
         a = np.array([0] * number_of_noises + [1] * (x.shape[1] - number_of_noises))
         np.random.shuffle(a)
         return x * a
 
-    def train(self, x, y, alpha=0.01, epochs=10):
+    def train(self, x, y, alpha=0.01, epochs=10, noise_factor=0.01):
         for j in range(epochs):
             for i in range(len(x)):
-                self.back_propagation(ANN.noise(x[i]), y[i], alpha)
+                self.back_propagation(ANN.noise(x[i], noise_factor), y[i], alpha)
 
     def predict(self, x):
         output = self.feed_forward(x)[-1]
@@ -95,14 +93,8 @@ class ANN(object):
             return pickle.load(file_)
 
     @staticmethod
-    def softmax_derivative(x):
-        exps = np.exp(x - x.max())
-        return exps / np.sum(exps, axis=0) * (1 - exps / np.sum(exps, axis=0))
-
-    @staticmethod
-    def loss(output, expected_output, prev_layer_output):
+    def loss(output, expected_output):
         return output - expected_output
-        #return 2 * (output - expected_output) / output.shape[0] * ANN.softmax_derivative(prev_layer_output).transpose()
 
     def __str__(self):
         return str(self.__dict__)
