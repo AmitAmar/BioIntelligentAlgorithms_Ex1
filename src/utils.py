@@ -54,7 +54,7 @@ def load_dataset(dataset_path: str):
     data = normalize_data(data)
 
     try:
-        tags = to_categorical(df[0].to_numpy().replace('?', 1) - 1)
+        tags = to_categorical(df[0].to_numpy() - 1)
     except ValueError:
         tags = to_categorical(np.array([0] * len(data)))
 
